@@ -1,0 +1,26 @@
+[
+    {
+      "id": 1,
+      "name": "Aiguillettes de poulet",
+      "description": "Poulet français - 1kg",
+      "price": 10
+    },
+    {
+      "id": 2,
+      "name": "Curry Madras",
+      "description": "Marque métro - 480g",
+      "price": 9
+    },
+    {
+      "id": 3,
+      "name": "Riz Palais des Thés",
+      "description": "1kg",
+      "price": 2
+    },
+    {
+      "id": 4,
+      "name": "Dragon Quest VIII",
+      "description": "PS2- 2004",
+      "price": 20000
+    }
+  ]
