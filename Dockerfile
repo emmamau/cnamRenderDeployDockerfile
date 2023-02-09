@@ -36,6 +36,10 @@ WORKDIR /var/www/html
 
 RUN mkdir ./src
 
+RUN composer install --prefer-dist
+RUN composer dump-autoload --optimize
+
+
 RUN composer update
 
 # RUN php vendor/bin/doctrine orm:convert-mapping --namespace="" --force --from-database yml ./config/yaml
