@@ -98,9 +98,11 @@ $app = AppFactory::create();
 
 
 $app->get('/api/hello/{name}', function (Request $request, Response $response, $args) {
-    $array = [];
-    $array ["nom"] = $args ['name'];
-    $response->getBody()->write(json_encode ($array));
+    // $array = [];
+    // $array ["nom"] = $args ['name'];
+    // $response->getBody()->write(json_encode ($array));
+
+    $response->getBody()->write(json_encode("Bonjour " . $args['name']));
     return $response;
 });
 
