@@ -65,9 +65,12 @@ $app->get('/api/hello/{name}', function (Request $request, Response $response, $
 
 $app->post('/api/register', function (Request $request, Response $response) {
 
-    $name = $request->$_POST['name'];
-    $email = $request->$_POST['email'];
-    $password = $request->$_POST['password'];
+    // $name = $request->$_POST['name'];
+    // $email = $request->$_POST['email'];
+    // $password = $request->$_POST['password'];
+    $name = "test";
+    $email = "test";
+    $password = "test";
 
     $response->getBody()->write(json_encode("Bonjour " . $name . ", vos identifiants : " . $email . " " . $password));
     return $response;
