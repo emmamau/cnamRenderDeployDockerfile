@@ -55,13 +55,13 @@ $app->get('/api/hello/{name}', function (Request $request, Response $response, $
     return $response;
 });
 
-$app->options('/api/catalogue', function (Request $request, Response $response, $args) {
+// $app->options('/api/catalogue', function (Request $request, Response $response, $args) {
     
-    // Evite que le front demande une confirmation à chaque modification
-    $response = $response->withHeader("Access-Control-Max-Age", 600);
+//     // Evite que le front demande une confirmation à chaque modification
+//     $response = $response->withHeader("Access-Control-Max-Age", 600);
     
-    return addHeaders ($response);
-});
+//     return addHeaders ($response);
+// });
 
 // API Nécessitant un Jwt valide
 $app->get('/api/catalogue/{filtre}', function (Request $request, Response $response, $args) {
