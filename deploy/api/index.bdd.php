@@ -173,7 +173,7 @@ $options = [
 ];
 
 // Chargement du Middleware
-$app->add(new Tuupola\Middleware\JwtAuthentication($options));
+// $app->add(new Tuupola\Middleware\JwtAuthentication($options));
 
 // Run app
 $app->run();
