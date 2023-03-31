@@ -10,6 +10,22 @@ const JWT_SECRET = "makey1234567";
 
 $app = AppFactory::create();
 
+$options = [
+    "attribute" => "token",
+    "header" => "Authorization",
+    "regexp" => "/Bearer\s+(.*)$/i",
+    "secure" => false,
+    "algorithm" => ["HS256"],
+    "secret" => JWT_SECRET,
+    "path" => ["/api"],
+    "ignore" => ["/api/hello","/api/login","/api/createUser"],
+    "error" => function ($response, $arguments) {
+        $data = array('ERREUR' => 'Connexion', 'ERREUR' => 'JWT Non valide');
+        $response = $response->withStatus(401);
+        return $response->withHeader("Content-Type", "application/json")->getBody()->write(json_encode($data));
+    }
+];
+
 function  addHeaders (Response $response) : Response {
     $response = $response
     ->withHeader("Content-Type", "application/json")
@@ -34,9 +50,9 @@ function createJwT (Response $response) : Response {
     $issuedAt = time();
     $expirationTime = $issuedAt + 60;
     $payload = array(
-    'userid' => 'toto',
-    'email' => 'titi@gmail.com',
-    'pseudo' => 'titiPseudo',
+    'userid' => '1',
+    'email' => 'enzo.valentin.auditeur@cnam.fr',
+    'pseudo' => 'enzo',
     'iat' => $issuedAt,
     'exp' => $expirationTime
     );
@@ -55,7 +71,7 @@ $app->options('/api/user', function (Request $request, Response $response, $args
 });
 
 $app->get('/api/user', function (Request $request, Response $response, $args) {   
-    $data = array('nom' => 'toto', 'prenom' => 'titi','adresse' => '6 rue des fleurs', 'tel' => '0606060607');
+    $data = array('nom' => 'valentin', 'prenom' => 'enzo','adresse' => '6 rue des fleurs', 'tel' => '0606060607');
     $response->getBody()->write(json_encode($data));
 
     return $response;
@@ -63,13 +79,14 @@ $app->get('/api/user', function (Request $request, Response $response, $args) {
 
 
 
-$app->options('/api/login', function (Request $request, Response $response, $args) {
+// $app->options('/api/login', function (Request $request, Response $response, $args) {
     
-    // Evite que le front demande une confirmation à chaque modification
-    $response = $response->withHeader("Access-Control-Max-Age", 600);
+//     // Evite que le front demande une confirmation à chaque modification
+//     $response = $response->withHeader("Access-Control-Max-Age", 600);
     
-    return addHeaders ($response);
-});
+//     return addHeaders ($response);
+// });
+
 // APi d'authentification générant un JWT
 $app->post('/api/login', function (Request $request, Response $response, $args) {   
     $err=false;
@@ -86,7 +103,7 @@ $app->post('/api/login', function (Request $request, Response $response, $args) 
 
     if (!$err) {
             $response = createJwT ($response);
-            $data = array('nom' => 'toto', 'prenom' => 'titi');
+            $data = array('nom' => 'valentin', 'prenom' => 'enzo');
             $response->getBody()->write(json_encode($data));
      } else {          
             $response = $response->withStatus(401);
@@ -147,21 +164,6 @@ $app->get('/api/catalogue/{filtre}', function (Request $request, Response $respo
 
     return $response;
 });
-$options = [
-    "attribute" => "token",
-    "header" => "Authorization",
-    "regexp" => "/Bearer\s+(.*)$/i",
-    "secure" => false,
-    "algorithm" => ["HS256"],
-    "secret" => JWT_SECRET,
-    "path" => ["/api"],
-    "ignore" => ["/api/hello","/api/login","/api/createUser"],
-    "error" => function ($response, $arguments) {
-        $data = array('ERREUR' => 'Connexion', 'ERREUR' => 'JWT Non valide');
-        $response = $response->withStatus(401);
-        return $response->withHeader("Content-Type", "application/json")->getBody()->write(json_encode($data));
-    }
-];
 
 $app->add(new Tuupola\Middleware\JwtAuthentication($options));
 $app->run ();
