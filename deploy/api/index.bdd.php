@@ -15,7 +15,8 @@ $app = AppFactory::create();
 function  addHeaders (Response $response) : Response {
     $response = $response
     ->withHeader("Content-Type", "application/json")
-    ->withHeader('Access-Control-Allow-Origin', ('https://tp05-valentin-enzo.onrender.com'))
+    // ->withHeader('Access-Control-Allow-Origin', ('https://tp05-valentin-enzo.onrender.com'))
+    ->withHeader('Access-Control-Allow-Origin', ('*'))
     ->withHeader('Access-Control-Allow-Headers', 'Content-Type,  Authorization')
     ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
     ->withHeader('Access-Control-Expose-Headers', 'Authorization');
@@ -55,6 +56,33 @@ $app->get('/api/hello/{name}', function (Request $request, Response $response, $
     return $response;
 });
 
+$catalogue = '[
+    {
+      "id": 1,
+      "name": "Aiguillettes de poulet",
+      "description": "Poulet français - 1kg",
+      "price": 10
+    },
+    {
+      "id": 2,
+      "name": "Curry Madras",
+      "description": "Marque métro - 480g",
+      "price": 9
+    },
+    {
+      "id": 3,
+      "name": "Riz Palais des Thés",
+      "description": "1kg",
+      "price": 2
+    },
+    {
+      "id": 4,
+      "name": "Dragon Quest VIII",
+      "description": "PS2- 2004",
+      "price": 20000
+    }
+]';
+
 $app->options('/api/catalogue', function (Request $request, Response $response, $args) {
     
     // Evite que le front demande une confirmation à chaque modification
@@ -66,8 +94,9 @@ $app->options('/api/catalogue', function (Request $request, Response $response, 
 // API Nécessitant un Jwt valide
 $app->get('/api/catalogue/{filtre}', function (Request $request, Response $response, $args) {
     $filtre = $args['filtre'];
-    $flux = '[{"titre":"linux","ref":"001","prix":"20"},{"titre":"java","ref":"002","prix":"21"},{"titre":"windows","ref":"003","prix":"22"},{"titre":"angular","ref":"004","prix":"23"},{"titre":"unix","ref":"005","prix":"25"},{"titre":"javascript","ref":"006","prix":"19"},{"titre":"html","ref":"007","prix":"15"},{"titre":"css","ref":"008","prix":"10"}]';
-   
+    // $flux = '[{"titre":"linux","ref":"001","prix":"20"},{"titre":"java","ref":"002","prix":"21"},{"titre":"windows","ref":"003","prix":"22"},{"titre":"angular","ref":"004","prix":"23"},{"titre":"unix","ref":"005","prix":"25"},{"titre":"javascript","ref":"006","prix":"19"},{"titre":"html","ref":"007","prix":"15"},{"titre":"css","ref":"008","prix":"10"}]';
+   $flux = $catalogue;
+
     if ($filtre) {
       $data = json_decode($flux, true); 
     	
@@ -85,7 +114,9 @@ $app->get('/api/catalogue/{filtre}', function (Request $request, Response $respo
 
 // API Nécessitant un Jwt valide
 $app->get('/api/catalogue', function (Request $request, Response $response, $args) {
-    $flux = '[{"titre":"linux","ref":"001","prix":"20"},{"titre":"java","ref":"002","prix":"21"},{"titre":"windows","ref":"003","prix":"22"},{"titre":"angular","ref":"004","prix":"23"},{"titre":"unix","ref":"005","prix":"25"},{"titre":"javascript","ref":"006","prix":"19"},{"titre":"html","ref":"007","prix":"15"},{"titre":"css","ref":"008","prix":"10"}]';
+    // $flux = '[{"titre":"linux","ref":"001","prix":"20"},{"titre":"java","ref":"002","prix":"21"},{"titre":"windows","ref":"003","prix":"22"},{"titre":"angular","ref":"004","prix":"23"},{"titre":"unix","ref":"005","prix":"25"},{"titre":"javascript","ref":"006","prix":"19"},{"titre":"html","ref":"007","prix":"15"},{"titre":"css","ref":"008","prix":"10"}]';
+    $flux = $catalogue;
+    
     $data = json_decode($flux, true); 
     
     $response->getBody()->write(json_encode($data));
@@ -173,7 +204,7 @@ $options = [
 ];
 
 // Chargement du Middleware
-// $app->add(new Tuupola\Middleware\JwtAuthentication($options));
+$app->add(new Tuupola\Middleware\JwtAuthentication($options));
 
 // Run app
 $app->run();
