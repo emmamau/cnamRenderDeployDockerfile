@@ -1,5 +1,5 @@
 <?php
-/**use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Tuupola\Middleware\HttpBasicAuthentication;
@@ -165,4 +165,4 @@ $app->get('/api/catalogue/{filtre}', function (Request $request, Response $respo
 });
 
 $app->add(new Tuupola\Middleware\JwtAuthentication($options));
-$app->run ();**/
+$app->run ();
