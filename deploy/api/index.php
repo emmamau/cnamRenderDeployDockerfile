@@ -107,7 +107,7 @@ $app->post('/api/login', function (Request $request, Response $response, $args) 
      } else {          
             $response = $response->withStatus(401);
      }
-    return $response;
+    return addHeaders($response);
 });
 
 $catalogue = '[
