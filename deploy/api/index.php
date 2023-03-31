@@ -79,14 +79,13 @@ $app->get('/api/user', function (Request $request, Response $response, $args) {
 
 
 
-// $app->options('/api/login', function (Request $request, Response $response, $args) {
+$app->options('/api/login', function (Request $request, Response $response, $args) {
     
-//     // Evite que le front demande une confirmation à chaque modification
-//     $response = $response->withHeader("Access-Control-Max-Age", 600);
+    // Evite que le front demande une confirmation à chaque modification
+    $response = $response->withHeader("Access-Control-Max-Age", 600);
     
-//     return addHeaders ($response);
-// });
-
+    return addHeaders ($response);
+});
 // APi d'authentification générant un JWT
 $app->post('/api/login', function (Request $request, Response $response, $args) {   
     $err=false;
