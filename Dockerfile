@@ -1,67 +1,46 @@
-FROM php:7.4-apache
+# Utilisez une image Node.js pour construire l'application
+FROM node:14 as build
 
-ENV COMPOSER_ALLOW_SUPERUSER=1
+# Définissez le répertoire de travail
+WORKDIR /app
 
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+# Copiez le fichier package.json et le fichier package-lock.json
+COPY package*.json ./
 
-RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
-   mv composer.phar /usr/local/bin/composer
-   
+# Installez les dépendances du serveur Express
+RUN npm install
 
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    libbz2-dev \
-    libfreetype6-dev \
-    libicu-dev \
-    libjpeg-dev \
-    libmcrypt-dev \
-    libpng-dev \
-    libreadline-dev \
-    libzip-dev \
-    libpq-dev \
-    unzip \
-    zip \
- && rm -rf /var/lib/apt/lists/*
-  
-RUN a2enmod rewrite
+# Copiez les fichiers de l'application Express (serveur) dans l'image
+COPY server.js ./
+COPY routes/ ./routes/
+COPY controllers/ ./controllers/
 
-RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
+# Allez dans le répertoire de l'application Angular
+WORKDIR /app/angular-app
 
-RUN docker-php-ext-install pdo pdo_pgsql
+# Copiez le fichier package.json et le fichier package-lock.json de l'application Angular
+COPY angular-app/package*.json ./
 
-COPY ./deploy/ /var/www/html
+# Installez les dépendances de l'application Angular
+RUN npm install
 
-WORKDIR /var/www/html
+# Copiez les fichiers source de l'application Angular
+COPY angular-app/ ./
 
-RUN mkdir ./src
+# Compilez l'application Angular en utilisant la commande "ng build"
+RUN npm run build
 
-RUN composer install --prefer-dist
-RUN composer dump-autoload --optimize
+# Définissez l'étape de production
+FROM node:14
 
+# Définissez le répertoire de travail
+WORKDIR /app
 
-RUN composer update
+# Copiez le serveur Express et les dépendances depuis l'étape de construction
+COPY --from=build /app ./
 
-# RUN php vendor/bin/doctrine orm:convert-mapping --namespace="" --force --from-database yml ./config/yaml
+# Exposez le port sur lequel le serveur Express fonctionne (ajustez si nécessaire)
+EXPOSE 3000
 
-# RUN php vendor/bin/doctrine orm:generate-entities --generate-annotations=false --update-entities=true --generate-methods=false ./src
-
-# RUN composer update
-
-# Exposer le port 80 pour permettre les connexions entrantes
-EXPOSE 80
-
-# Définir l'entrée de l'application
-CMD ["apache2-foreground"]
-
-
-
-
-
-
-
-
-
-
-
-
+# Commande pour démarrer le serveur Express
+CMD [ "node", "server.js" ]
